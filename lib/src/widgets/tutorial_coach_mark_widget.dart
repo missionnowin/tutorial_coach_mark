@@ -14,7 +14,6 @@ class TutorialCoachMarkWidget extends StatefulWidget {
     required this.targets,
     this.finish,
     this.paddingFocus = 10,
-    this.paddingContent = 10,
     this.clickTarget,
     this.onClickTargetWithTapPosition,
     this.clickOverlay,
@@ -36,8 +35,6 @@ class TutorialCoachMarkWidget extends StatefulWidget {
     this.showSkipInLastTarget = false,
     this.imageFilter,
     this.backgroundSemanticLabel,
-    this.contentWidth,
-    this.contentConstraints,
     this.initialFocus = 0,
   })  : assert(targets.length > 0),
         super(key: key);
@@ -51,9 +48,6 @@ class TutorialCoachMarkWidget extends StatefulWidget {
   final Color colorShadow;
   final double opacityShadow;
   final double paddingFocus;
-  final double paddingContent;
-  final double? contentWidth;
-  final BoxConstraints? contentConstraints;
   final void Function()? onClickSkip;
   final AlignmentGeometry alignSkip;
   final String textSkip;
@@ -166,9 +160,9 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
       return const SizedBox.shrink();
     }
 
-    final positioned = Offset(
-      target.offset.dx,
-      target.offset.dy,
+    var positioned = Offset(
+      target.offset.dx + target.size.width / 2,
+      target.offset.dy + target.size.height / 2,
     );
 
     double haloWidth;
@@ -184,6 +178,9 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
       haloHeight = target.size.height;
     }
 
+    haloWidth = haloWidth * 0.6 + widget.paddingFocus;
+    haloHeight = haloHeight * 0.6 + widget.paddingFocus;
+
     double width = 0.0;
     double? top;
     double? bottom;
@@ -198,7 +195,7 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
           {
             width = ancestorBox.size.width;
             left = 0;
-            top = positioned.dy + haloHeight + widget.paddingContent;
+            top = positioned.dy + haloHeight;
             bottom = null;
           }
           break;
@@ -207,29 +204,24 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
             width = ancestorBox.size.width;
             left = 0;
             top = null;
-            bottom = (ancestorBox.size.height - positioned.dy) + widget.paddingContent;
+            bottom = haloHeight + (ancestorBox.size.height - positioned.dy);
           }
           break;
         case ContentAlign.left:
           {
-            width = positioned.dx - haloWidth - widget.paddingContent;
+            width = positioned.dx - haloWidth;
             left = 0;
-            top = positioned.dy - haloHeight;
+            top = positioned.dy - target!.size.height / 2 - haloHeight;
             bottom = null;
           }
           break;
         case ContentAlign.right:
           {
             left = positioned.dx + haloWidth;
-            top = positioned.dy - haloHeight;
+            top = positioned.dy - target!.size.height / 2 - haloHeight;
             bottom = null;
             width = ancestorBox.size.width - left!;
           }
-          break;
-        case ContentAlign.centerRight:
-          left = positioned.dx + haloWidth;
-          top = positioned.dy + haloHeight / 2;
-          width = ancestorBox.size.width - left!;
           break;
         case ContentAlign.custom:
           {
@@ -247,12 +239,13 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
         bottom: bottom,
         left: left,
         right: right,
-        child: Container(
-          width: widget.contentWidth ?? width,
-          constraints: widget.contentConstraints,
-          padding: i.padding,
-          child: i.builder?.call(context, this) ??
-              (i.child ?? const SizedBox.shrink()),
+        child: SizedBox(
+          width: width,
+          child: Padding(
+            padding: i.padding,
+            child: i.builder?.call(context, this) ??
+                (i.child ?? const SizedBox.shrink()),
+          ),
         ),
       );
     }).toList();

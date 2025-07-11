@@ -53,8 +53,6 @@ class TutorialCoachMark {
   final FutureOr<void> Function(TargetFocus)? onClickOverlay;
   final Function()? onFinish;
   final double paddingFocus;
-  final double paddingContent;
-  final BoxConstraints? contentConstraints;
 
   // if onSkip return false, the overlay will not be dismissed and call `next`
   final bool Function()? onSkip;
@@ -105,8 +103,6 @@ class TutorialCoachMark {
     this.showSkipInLastTarget = true,
     this.imageFilter,
     this.initialFocus = 0,
-    this.paddingContent = 10, 
-    this.contentConstraints,
     this.backgroundSemanticLabel,
     this.disableBackButton = true,
   }) : assert(opacityShadow >= 0 && opacityShadow <= 1);
@@ -134,8 +130,6 @@ class TutorialCoachMark {
           unFocusAnimationDuration: unFocusAnimationDuration,
           pulseAnimationDuration: pulseAnimationDuration,
           pulseEnable: pulseEnable,
-          paddingContent: paddingContent,
-          contentConstraints: contentConstraints,
           finish: finish,
           rootOverlay: rootOverlay,
           showSkipInLastTarget: showSkipInLastTarget,
