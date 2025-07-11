@@ -247,13 +247,14 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
         bottom: bottom,
         left: left,
         right: right,
-        child: Container(
-          width: widget.contentWidth ?? width,
-          constraints: widget.contentConstraints,
-          padding: i.padding,
-          child: i.builder?.call(context, this) ??
-              (i.child ?? const SizedBox.shrink()),
-        ),
+        child: SizedBox(
+          width: width,
+          child: Padding(
+            padding: i.padding,
+            child: i.builder?.call(context, this) ??
+                (i.child ?? const SizedBox.shrink()),
+          )
+        )
       );
     }).toList();
 
