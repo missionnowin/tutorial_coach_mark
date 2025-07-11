@@ -21,6 +21,9 @@ class TutorialCoachMark {
   final FutureOr<void> Function(TargetFocus)? onClickOverlay;
   final Function()? onFinish;
   final double paddingFocus;
+  final double paddingContent;
+  final double? contentWidth;
+  final BoxConstraints? contentConstraints;
   // if onSkip return false, the overlay will not be dismissed and call `next`
   final bool Function()? onSkip;
   final AlignmentGeometry alignSkip;
@@ -51,6 +54,9 @@ class TutorialCoachMark {
     this.onClickOverlay,
     this.onFinish,
     this.paddingFocus = 10,
+    this.paddingContent = 10,
+    this.contentWidth,
+    this.contentConstraints,
     this.onSkip,
     this.alignSkip = Alignment.bottomRight,
     this.textSkip = "SKIP",
@@ -80,6 +86,9 @@ class TutorialCoachMark {
             clickTarget: onClickTarget,
             onClickTargetWithTapPosition: onClickTargetWithTapPosition,
             clickOverlay: onClickOverlay,
+            contentConstraints: contentConstraints,
+            contentWidth: contentWidth,
+            paddingContent: paddingContent,
             paddingFocus: paddingFocus,
             onClickSkip: skip,
             alignSkip: alignSkip,
