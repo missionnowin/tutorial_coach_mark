@@ -20,7 +20,6 @@ class TutorialCoachMarkWidget extends StatefulWidget {
     this.alignSkip = Alignment.bottomRight,
     this.textSkip = "SKIP",
     this.onClickSkip,
-    this.skipWidget,
     this.colorShadow = Colors.black,
     this.opacityShadow = 0.8,
     this.textStyleSkip = const TextStyle(color: Colors.white),
@@ -31,10 +30,10 @@ class TutorialCoachMarkWidget extends StatefulWidget {
     this.pulseAnimationDuration,
     this.pulseVariation,
     this.pulseEnable = true,
+    this.skipWidget,
     this.rootOverlay = false,
     this.showSkipInLastTarget = false,
     this.imageFilter,
-    this.backgroundSemanticLabel,
     this.initialFocus = 0,
   })  : assert(targets.length > 0),
         super(key: key);
@@ -44,11 +43,11 @@ class TutorialCoachMarkWidget extends StatefulWidget {
   final FutureOr Function(TargetFocus, TapDownDetails)?
       onClickTargetWithTapPosition;
   final FutureOr Function(TargetFocus)? clickOverlay;
-  final void Function()? finish;
+  final Function()? finish;
   final Color colorShadow;
   final double opacityShadow;
   final double paddingFocus;
-  final void Function()? onClickSkip;
+  final Function()? onClickSkip;
   final AlignmentGeometry alignSkip;
   final String textSkip;
   final TextStyle textStyleSkip;
@@ -64,7 +63,6 @@ class TutorialCoachMarkWidget extends StatefulWidget {
   final bool showSkipInLastTarget;
   final ImageFilter? imageFilter;
   final int initialFocus;
-  final String? backgroundSemanticLabel;
 
   @override
   TutorialCoachMarkWidgetState createState() => TutorialCoachMarkWidgetState();
@@ -97,7 +95,6 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
             pulseEnable: widget.pulseEnable,
             rootOverlay: widget.rootOverlay,
             imageFilter: widget.imageFilter,
-            backgroundSemanticLabel: widget.backgroundSemanticLabel,
             clickTarget: (target) {
               return widget.clickTarget?.call(target);
             },
@@ -144,19 +141,12 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
         currentTarget!,
         rootOverlay: widget.rootOverlay,
       );
-    } on NotFoundTargetException catch (e) {
-      skip();
-
-      ///error tutorial exit
-      debugPrint("  error>>>>> e ${e.toString()}");
-      //debugPrintStack(stackTrace: s);
+    } on NotFoundTargetException catch (e, s) {
+      debugPrint(e.toString());
+      debugPrintStack(stackTrace: s);
     }
 
     if (target == null) {
-      return const SizedBox.shrink();
-    }
-
-    if (target.offset.dx.isNaN || target.offset.dy.isNaN) {
       return const SizedBox.shrink();
     }
 
@@ -181,19 +171,17 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
     haloWidth = haloWidth * 0.6 + widget.paddingFocus;
     haloHeight = haloHeight * 0.6 + widget.paddingFocus;
 
-    double width = 0.0;
+    double weight = 0.0;
     double? top;
     double? bottom;
     double? left;
     double? right;
 
-    final ancestorBox = context.findRenderObject() as RenderBox;
-
     children = currentTarget!.contents!.map<Widget>((i) {
       switch (i.align) {
         case ContentAlign.bottom:
           {
-            width = ancestorBox.size.width;
+            weight = MediaQuery.of(context).size.width;
             left = 0;
             top = positioned.dy + haloHeight;
             bottom = null;
@@ -201,15 +189,16 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
           break;
         case ContentAlign.top:
           {
-            width = ancestorBox.size.width;
+            weight = MediaQuery.of(context).size.width;
             left = 0;
             top = null;
-            bottom = haloHeight + (ancestorBox.size.height - positioned.dy);
+            bottom = haloHeight +
+                (MediaQuery.of(context).size.height - positioned.dy);
           }
           break;
         case ContentAlign.left:
           {
-            width = positioned.dx - haloWidth;
+            weight = positioned.dx - haloWidth;
             left = 0;
             top = positioned.dy - target!.size.height / 2 - haloHeight;
             bottom = null;
@@ -220,7 +209,7 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
             left = positioned.dx + haloWidth;
             top = positioned.dy - target!.size.height / 2 - haloHeight;
             bottom = null;
-            width = ancestorBox.size.width - left!;
+            weight = MediaQuery.of(context).size.width - left!;
           }
           break;
         case ContentAlign.custom:
@@ -229,18 +218,19 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
             right = i.customPosition!.right;
             top = i.customPosition!.top;
             bottom = i.customPosition!.bottom;
-            width = ancestorBox.size.width;
+            weight = MediaQuery.of(context).size.width;
           }
           break;
       }
 
-      return Positioned(
+      return AnimatedPositioned(
+        duration: const Duration(milliseconds: 100),
         top: top,
         bottom: bottom,
         left: left,
         right: right,
         child: SizedBox(
-          width: width,
+          width: weight,
           child: Padding(
             padding: i.padding,
             child: i.builder?.call(context, this) ??
@@ -258,45 +248,38 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
   Widget _buildSkip() {
     bool isLastTarget = false;
 
-    if (widget.hideSkip) {
-      return const SizedBox.shrink();
-    }
-
     if (currentTarget != null) {
-      final targetIndex = widget.targets.indexOf(currentTarget!);
-      isLastTarget = targetIndex == widget.targets.length - 1;
+      isLastTarget =
+          widget.targets.indexOf(currentTarget!) == widget.targets.length - 1;
     }
 
-    if (isLastTarget && !widget.showSkipInLastTarget) {
+    if (widget.hideSkip || (isLastTarget && !widget.showSkipInLastTarget)) {
       return const SizedBox.shrink();
     }
+
+    Widget animatedWidget = AnimatedOpacity(
+      opacity: showContent ? 1 : 0,
+      duration: const Duration(milliseconds: 300),
+      child: InkWell(
+        onTap: skip,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: IgnorePointer(
+            child: widget.skipWidget ??
+                Text(
+                  widget.textSkip,
+                  style: widget.textStyleSkip,
+                ),
+          ),
+        ),
+      ),
+    );
 
     return Align(
       alignment: currentTarget?.alignSkip ?? widget.alignSkip,
-      child: SafeArea(
-        bottom: widget.useSafeArea ? true : false,
-        top: widget.useSafeArea ? true : false,
-        left: widget.useSafeArea ? true : false,
-        right: widget.useSafeArea ? true : false,
-        child: AnimatedOpacity(
-          opacity: showContent ? 1 : 0,
-          duration: Durations.medium2,
-          child: widget.skipWidget ??
-              InkWell(
-                onTap: skip,
-                child: IgnorePointer(
-                  child: widget.skipWidget ??
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Text(
-                          widget.textSkip,
-                          style: widget.textStyleSkip,
-                        ),
-                      ),
-                ),
-              ),
-        ),
-      ),
+      child: (widget.useSafeArea)
+          ? SafeArea(child: animatedWidget)
+          : animatedWidget,
     );
   }
 
@@ -310,4 +293,13 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
   void previous() => _focusLightKey.currentState?.previous();
 
   void goTo(int index) => _focusLightKey.currentState?.goTo(index);
+
+  void refresh() {
+    safeSetState(() {
+      _focusLightKey.currentState?.refresh();
+    });
+  }
+
+  int? get currentTargetIndex =>
+      _focusLightKey.currentState?.currentTargetIndex;
 }
