@@ -187,7 +187,6 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
         case ContentAlign.bottom:
           {
             width = ancestorBox.size.width;
-            left = 0;
             top = positioned.dy + haloHeight + widget.paddingContent;
             bottom = null;
           }
@@ -195,7 +194,6 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
         case ContentAlign.top:
           {
             width = ancestorBox.size.width;
-            left = 0;
             top = null;
             bottom = (ancestorBox.size.height - positioned.dy) + widget.paddingContent;
           }
