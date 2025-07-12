@@ -14,7 +14,8 @@ class TutorialCoachMarkWidget extends StatefulWidget {
     required this.targets,
     this.finish,
     this.paddingFocus = 10,
-    this.paddingContent = 10,
+    this.paddingContentVertical = 10,
+    this.paddingContentHorizontal = 10,
     this.clickTarget,
     this.onClickTargetWithTapPosition,
     this.clickOverlay,
@@ -50,7 +51,8 @@ class TutorialCoachMarkWidget extends StatefulWidget {
   final Color colorShadow;
   final double opacityShadow;
   final double paddingFocus;
-  final double paddingContent;
+  final double paddingContentHorizontal;
+  final double paddingContentVertical;
   final double? contentWidth;
   final BoxConstraints? contentConstraints;
   final Function()? onClickSkip;
@@ -200,7 +202,7 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
         case ContentAlign.bottom:
           {
             width = ancestorWidth ;
-            top = positioned.dy + haloHeight + widget.paddingContent;
+            top = positioned.dy + haloHeight + widget.paddingContentVertical;
             left = (ancestorWidth  - positionWidth!) / 2;
             right = null;
             bottom = null;
@@ -212,12 +214,12 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
             top = null;
             left = (ancestorWidth  - positionWidth!) / 2;
             right = null;
-            bottom = (ancestorBox.size.height - positioned.dy) + widget.paddingContent;
+            bottom = (ancestorBox.size.height - positioned.dy) + widget.paddingContentVertical;
           }
           break;
         case ContentAlign.left:
           {
-            width = positioned.dx - haloWidth - widget.paddingContent;
+            width = positioned.dx - haloWidth - widget.paddingContentHorizontal;
             left = 0;
             top = positioned.dy - haloHeight;
             bottom = null;
@@ -225,15 +227,15 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
           break;
         case ContentAlign.right:
           {
-            left = positioned.dx + haloWidth + widget.paddingContent;
+            left = positioned.dx + haloWidth + widget.paddingContentHorizontal;
             top = positioned.dy - haloHeight / 2;
             bottom = null;
             width = ancestorWidth - left!;
           }
           break;
         case ContentAlign.centerRight:
-          left = positioned.dx + haloWidth + widget.paddingContent;
-          top = positioned.dy + haloHeight / 2;
+          left = positioned.dx + haloWidth + widget.paddingContentVertical;
+          top = positioned.dy + haloHeight / 2 + widget.paddingContentVertical;
           width = ancestorWidth - left!;
           break;
         case ContentAlign.custom:
