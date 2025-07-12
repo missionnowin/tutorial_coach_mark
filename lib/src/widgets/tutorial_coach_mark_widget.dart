@@ -234,25 +234,12 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
           break;
       }
 
-      final screenWidth = MediaQuery.of(context).size.width;
-      final widthConstraints = widget.contentConstraints?.maxWidth;
-      double? positionWidth;
-
-      if (widthConstraints != null) {
-        positionWidth = screenWidth > widthConstraints ? widthConstraints : screenWidth;
-      }
-
-      if (widget.contentWidth != null) {
-        positionWidth = widget.contentWidth;
-      }
-
       return AnimatedPositioned(
         duration: const Duration(milliseconds: 100),
         top: top,
         bottom: bottom,
         left: left,
         right: right,
-        width: positionWidth,
         child: Container(
           alignment: Alignment.center,
           width: widget.contentWidth ?? width,
