@@ -181,20 +181,37 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
     double? right;
 
     final ancestorBox = context.findRenderObject() as RenderBox;
+    final ancestorWidth =  ancestorBox.size.width;
+    final widthConstraints = widget.contentConstraints?.maxWidth;
+    double? positionWidth;
+
+    if (widthConstraints != null) {
+      positionWidth = ancestorWidth > widthConstraints ? widthConstraints : ancestorWidth;
+    }
+
+    if (widget.contentWidth != null) {
+      positionWidth = widget.contentWidth;
+    }
+
+    positionWidth ??= width;
 
     children = currentTarget!.contents!.map<Widget>((i) {
       switch (i.align) {
         case ContentAlign.bottom:
           {
-            width = ancestorBox.size.width;
+            width = ancestorWidth ;
             top = positioned.dy + haloHeight + widget.paddingContent;
+            left = (ancestorWidth  - positionWidth!) / 2;
+            right = null;
             bottom = null;
           }
           break;
         case ContentAlign.top:
           {
-            width = ancestorBox.size.width;
+            width = ancestorWidth ;
             top = null;
+            left = (ancestorWidth  - positionWidth!) / 2;
+            right = null;
             bottom = (ancestorBox.size.height - positioned.dy) + widget.paddingContent;
           }
           break;
@@ -208,16 +225,16 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
           break;
         case ContentAlign.right:
           {
-            left = positioned.dx + haloWidth;
-            top = positioned.dy - haloHeight;
+            left = positioned.dx + haloWidth + widget.paddingContent;
+            top = positioned.dy - haloHeight / 2;
             bottom = null;
-            width = ancestorBox.size.width - left!;
+            width = ancestorWidth - left!;
           }
           break;
         case ContentAlign.centerRight:
-          left = positioned.dx + haloWidth;
+          left = positioned.dx + haloWidth + widget.paddingContent;
           top = positioned.dy + haloHeight / 2;
-          width = ancestorBox.size.width - left!;
+          width = ancestorWidth - left!;
           break;
         case ContentAlign.custom:
           {
@@ -225,7 +242,7 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
             right = i.customPosition!.right;
             top = i.customPosition!.top;
             bottom = i.customPosition!.bottom;
-            width = ancestorBox.size.width;
+            width = ancestorWidth;
           }
           break;
       }
@@ -236,6 +253,7 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
         bottom: bottom,
         left: left,
         right: right,
+        width: positionWidth,
         child: Container(
           alignment: Alignment.center,
           width: widget.contentWidth ?? width,
