@@ -188,6 +188,8 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
           {
             width = ancestorBox.size.width;
             top = positioned.dy + haloHeight + widget.paddingContent;
+            left = 0;
+            right = 0;
             bottom = null;
           }
           break;
@@ -195,6 +197,8 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
           {
             width = ancestorBox.size.width;
             top = null;
+            left = 0;
+            right = 0;
             bottom = (ancestorBox.size.height - positioned.dy) + widget.paddingContent;
           }
           break;
