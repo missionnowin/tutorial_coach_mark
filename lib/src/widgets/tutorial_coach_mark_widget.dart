@@ -239,6 +239,7 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
         left: left,
         right: right,
         child: Container(
+          alignment: Alignment.center,
           width: widget.contentWidth ?? width,
           constraints: widget.contentConstraints,
           padding: i.padding,
