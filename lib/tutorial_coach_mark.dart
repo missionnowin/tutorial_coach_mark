@@ -24,7 +24,6 @@ class TutorialCoachMark {
   final double paddingContentHorizontal;
   final double paddingContentVertical;
   final double? contentWidth;
-  final BoxConstraints? contentConstraints;
   // if onSkip return false, the overlay will not be dismissed and call `next`
   final bool Function()? onSkip;
   final AlignmentGeometry alignSkip;
@@ -58,7 +57,6 @@ class TutorialCoachMark {
     this.paddingContentHorizontal = 10,
     this.paddingContentVertical = 10,
     this.contentWidth,
-    this.contentConstraints,
     this.onSkip,
     this.alignSkip = Alignment.bottomRight,
     this.textSkip = "SKIP",
@@ -88,7 +86,6 @@ class TutorialCoachMark {
             clickTarget: onClickTarget,
             onClickTargetWithTapPosition: onClickTargetWithTapPosition,
             clickOverlay: onClickOverlay,
-            contentConstraints: contentConstraints,
             contentWidth: contentWidth,
             paddingContentHorizontal: paddingContentHorizontal,
             paddingContentVertical: paddingContentVertical,

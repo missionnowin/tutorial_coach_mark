@@ -37,7 +37,6 @@ class TutorialCoachMarkWidget extends StatefulWidget {
     this.showSkipInLastTarget = false,
     this.imageFilter,
     this.contentWidth,
-    this.contentConstraints,
     this.initialFocus = 0,
   })  : assert(targets.length > 0),
         super(key: key);
@@ -54,7 +53,6 @@ class TutorialCoachMarkWidget extends StatefulWidget {
   final double paddingContentHorizontal;
   final double paddingContentVertical;
   final double? contentWidth;
-  final BoxConstraints? contentConstraints;
   final Function()? onClickSkip;
   final AlignmentGeometry alignSkip;
   final String textSkip;
@@ -183,37 +181,21 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
     double? right;
 
     final ancestorBox = context.findRenderObject() as RenderBox;
-    final ancestorWidth =  ancestorBox.size.width;
-    final widthConstraints = widget.contentConstraints?.maxWidth;
-    double? positionWidth;
-
-    if (widthConstraints != null) {
-      positionWidth = ancestorWidth > widthConstraints ? widthConstraints : ancestorWidth;
-    }
-
-    if (widget.contentWidth != null) {
-      positionWidth = widget.contentWidth;
-    }
-
-    positionWidth ??= width;
+    final ancestorWidth = ancestorBox.size.width;
 
     children = currentTarget!.contents!.map<Widget>((i) {
       switch (i.align) {
         case ContentAlign.bottom:
           {
-            width = ancestorWidth ;
+            width = ancestorWidth;
             top = positioned.dy + haloHeight + widget.paddingContentVertical;
-            left = (ancestorWidth  - positionWidth!) / 2;
-            right = null;
             bottom = null;
           }
           break;
         case ContentAlign.top:
           {
-            width = ancestorWidth ;
+            width = ancestorBox.size.width;
             top = null;
-            left = (ancestorWidth  - positionWidth!) / 2;
-            right = null;
             bottom = (ancestorBox.size.height - positioned.dy) + widget.paddingContentVertical;
           }
           break;
@@ -222,7 +204,6 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
             width = positioned.dx - haloWidth - widget.paddingContentHorizontal;
             left = 0;
             top = positioned.dy - haloHeight;
-            bottom = null;
           }
           break;
         case ContentAlign.right:
@@ -230,7 +211,7 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
             left = positioned.dx + haloWidth + widget.paddingContentHorizontal;
             top = positioned.dy - haloHeight / 2;
             bottom = null;
-            width = ancestorWidth - left!;
+            width = ancestorBox.size.width - left!;
           }
           break;
         case ContentAlign.centerRight:
@@ -244,27 +225,25 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
             right = i.customPosition!.right;
             top = i.customPosition!.top;
             bottom = i.customPosition!.bottom;
-            width = ancestorWidth;
+            width = ancestorBox.size.width;
           }
           break;
       }
 
       return AnimatedPositioned(
-        duration: const Duration(milliseconds: 100),
-        top: top,
-        bottom: bottom,
-        left: left,
-        right: right,
-        width: positionWidth,
-        child: Container(
-          alignment: Alignment.center,
-          width: widget.contentWidth ?? width,
-          constraints: widget.contentConstraints,
-          padding: i.padding,
-          child: i.builder?.call(context, this) ??
-              (i.child ?? const SizedBox.shrink()),
+          duration: const Duration(milliseconds: 100),
+          top: top,
+          bottom: bottom,
+          left: left,
+          right: right,
+          child: Container(
+            alignment: Alignment.center,
+            width: widget.contentWidth ?? width,
+            padding: i.padding,
+            child: i.builder?.call(context, this) ??
+                (i.child ?? const SizedBox.shrink()),
           )
-        );
+      );
     }).toList();
 
     return Stack(
