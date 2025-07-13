@@ -215,7 +215,7 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
           }
           break;
         case ContentAlign.centerRight:
-          left = positioned.dx + haloWidth + widget.paddingContentVertical;
+          left = positioned.dx + haloWidth + widget.paddingContentHorizontal;
           top = positioned.dy + haloHeight / 2 + widget.paddingContentVertical;
           width = ancestorWidth - left!;
           break;
