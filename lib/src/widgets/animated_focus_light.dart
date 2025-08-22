@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -19,7 +20,6 @@ class AnimatedFocusLight extends StatefulWidget {
   final FutureOr Function(TargetFocus)? clickOverlay;
   final Function? removeFocus;
   final Function()? finish;
-  final double paddingFocus;
   final Color colorShadow;
   final double opacityShadow;
   final Duration? focusAnimationDuration;
@@ -30,6 +30,8 @@ class AnimatedFocusLight extends StatefulWidget {
   final bool rootOverlay;
   final ImageFilter? imageFilter;
   final int initialFocus;
+  final double paddingFocusHorizontal;
+  final double paddingFocusVertical;
 
   const AnimatedFocusLight({
     Key? key,
@@ -40,7 +42,8 @@ class AnimatedFocusLight extends StatefulWidget {
     this.clickTarget,
     this.clickTargetWithTapPosition,
     this.clickOverlay,
-    this.paddingFocus = 10,
+    this.paddingFocusVertical = 10,
+    this.paddingFocusHorizontal = 10,
     this.colorShadow = Colors.black,
     this.opacityShadow = 0.8,
     this.focusAnimationDuration,
@@ -171,9 +174,9 @@ abstract class AnimatedFocusLightState extends State<AnimatedFocusLight>
       );
 
       if (targetPosition.size.height > targetPosition.size.width) {
-        _sizeCircle = targetPosition.size.height * 0.6 + _getPaddingFocus();
+        _sizeCircle = targetPosition.size.height * 0.6 + _getPaddingFocusHorizontal();
       } else {
-        _sizeCircle = targetPosition.size.width * 0.6 + _getPaddingFocus();
+        _sizeCircle = targetPosition.size.width * 0.6 + _getPaddingFocusVertical();
       }
     });
 
@@ -212,9 +215,9 @@ abstract class AnimatedFocusLightState extends State<AnimatedFocusLight>
       );
 
       if (targetPosition.size.height > targetPosition.size.width) {
-        _sizeCircle = targetPosition.size.height * 0.6 + _getPaddingFocus();
+        _sizeCircle = targetPosition.size.height * 0.6 + _getPaddingFocusHorizontal();
       } else {
-        _sizeCircle = targetPosition.size.width * 0.6 + _getPaddingFocus();
+        _sizeCircle = targetPosition.size.width * 0.6 + _getPaddingFocusVertical();
       }
     });
   }
@@ -252,7 +255,8 @@ abstract class AnimatedFocusLightState extends State<AnimatedFocusLight>
     return shape == ShapeLightFocus.RRect
         ? RectClipper(
             progress: _progressAnimated,
-            offset: _getPaddingFocus(),
+            offsetY: _getPaddingFocusVertical(),
+            offsetX: _getPaddingFocusHorizontal(),
             target: _targetPosition ?? TargetPosition(Size.zero, Offset.zero),
             radius: _targetFocus.radius ?? 0,
             borderSide: _targetFocus.borderSide,
@@ -270,7 +274,8 @@ abstract class AnimatedFocusLightState extends State<AnimatedFocusLight>
       return LightPaintRect(
         colorShadow: target.color ?? widget.colorShadow,
         progress: _progressAnimated,
-        offset: _getPaddingFocus(),
+        offsetY: _getPaddingFocusVertical(),
+        offsetX: _getPaddingFocusHorizontal(),
         target: _targetPosition ?? TargetPosition(Size.zero, Offset.zero),
         radius: target.radius ?? 0,
         borderSide: target.borderSide,
@@ -288,8 +293,12 @@ abstract class AnimatedFocusLightState extends State<AnimatedFocusLight>
     }
   }
 
-  double _getPaddingFocus() {
-    return _targetFocus.paddingFocus ?? (widget.paddingFocus);
+  double _getPaddingFocusVertical() {
+    return _targetFocus.paddingFocus ?? (widget.paddingFocusVertical);
+  }
+
+  double _getPaddingFocusHorizontal() {
+    return _targetFocus.paddingFocus ?? (widget.paddingFocusHorizontal);
   }
 
   BorderRadius _betBorderRadiusTarget() {
@@ -301,16 +310,16 @@ abstract class AnimatedFocusLightState extends State<AnimatedFocusLight>
 }
 
 class AnimatedStaticFocusLightState extends AnimatedFocusLightState {
-  double get left => (_targetPosition?.offset.dx ?? 0) - _getPaddingFocus() * 2;
+  double get left => (_targetPosition?.offset.dx ?? 0) - _getPaddingFocusHorizontal() * 2;
 
-  double get top => (_targetPosition?.offset.dy ?? 0) - _getPaddingFocus() * 2;
+  double get top => (_targetPosition?.offset.dy ?? 0) - _getPaddingFocusVertical() * 2;
 
   double get width {
-    return (_targetPosition?.size.width ?? 0) + _getPaddingFocus() * 4;
+    return max((_targetPosition?.size.width ?? 0) + _getPaddingFocusHorizontal() * 4, 0);
   }
 
   double get height {
-    return (_targetPosition?.size.height ?? 0) + _getPaddingFocus() * 4;
+    return max((_targetPosition?.size.height ?? 0) + _getPaddingFocusVertical() * 4, 0);
   }
 
   @override
@@ -380,13 +389,13 @@ class AnimatedPulseFocusLightState extends AnimatedFocusLightState {
   bool _finishFocus = false;
   bool _initReverse = false;
 
-  get left => (_targetPosition?.offset.dx ?? 0) - _getPaddingFocus() * 2;
+  get left => (_targetPosition?.offset.dx ?? 0) - _getPaddingFocusHorizontal() * 2;
 
-  get top => (_targetPosition?.offset.dy ?? 0) - _getPaddingFocus() * 2;
+  get top => (_targetPosition?.offset.dy ?? 0) - _getPaddingFocusVertical() * 2;
 
-  get width => (_targetPosition?.size.width ?? 0) + _getPaddingFocus() * 4;
+  get width => max((_targetPosition?.size.width ?? 0) + _getPaddingFocusHorizontal() * 4, 0);
 
-  get height => (_targetPosition?.size.height ?? 0) + _getPaddingFocus() * 4;
+  get height => max((_targetPosition?.size.height ?? 0) + _getPaddingFocusVertical() * 4, 0);
 
   @override
   void initState() {

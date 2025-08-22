@@ -230,7 +230,8 @@ class MyHomePageState extends State<MyHomePage> {
       targets: _createTargets(),
       colorShadow: Colors.red,
       textSkip: "SKIP",
-      paddingFocus: 10,
+      paddingFocusHorizontal: 10,
+      paddingContentVertical: 10,
       opacityShadow: 0.5,
       imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
       onFinish: () {

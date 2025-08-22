@@ -9,7 +9,8 @@ class LightPaintRect extends CustomPainter {
   final TargetPosition target;
   final Color colorShadow;
   final double opacityShadow;
-  final double offset;
+  final double offsetX;
+  final double offsetY;
   final double radius;
   final BorderSide? borderSide;
 
@@ -18,7 +19,8 @@ class LightPaintRect extends CustomPainter {
     required this.target,
     this.colorShadow = Colors.black,
     this.opacityShadow = 0.8,
-    this.offset = 10,
+    this.offsetY = 10,
+    this.offsetX = 10,
     this.radius = 10,
     this.borderSide,
   }) : assert(opacityShadow >= 0 && opacityShadow <= 1);
@@ -86,13 +88,13 @@ class LightPaintRect extends CustomPainter {
         max(target.size.width, target.size.height) +
         target.getBiggerSpaceBorder(size);
 
-    double x = -maxSize / 2 * (1 - progress) + target.offset.dx - offset / 2;
+    double x = -maxSize / 2 * (1 - progress) + target.offset.dx - offsetX / 2;
 
-    double y = -maxSize / 2 * (1 - progress) + target.offset.dy - offset / 2;
+    double y = -maxSize / 2 * (1 - progress) + target.offset.dy - offsetY / 2;
 
-    double w = maxSize * (1 - progress) + target.size.width + offset;
+    double w = maxSize * (1 - progress) + target.size.width + offsetX;
 
-    double h = maxSize * (1 - progress) + target.size.height + offset;
+    double h = maxSize * (1 - progress) + target.size.height + offsetY;
 
     canvas.drawPath(
       radius > 0

@@ -20,7 +20,9 @@ class TutorialCoachMark {
       onClickTargetWithTapPosition;
   final FutureOr<void> Function(TargetFocus)? onClickOverlay;
   final Function()? onFinish;
-  final double paddingFocus;
+
+  final double paddingFocusHorizontal;
+  final double paddingFocusVertical;
   final double paddingContentHorizontal;
   final double paddingContentVertical;
   final double? contentWidth;
@@ -54,7 +56,8 @@ class TutorialCoachMark {
     this.onClickTargetWithTapPosition,
     this.onClickOverlay,
     this.onFinish,
-    this.paddingFocus = 10,
+    this.paddingFocusHorizontal = 10,
+    this.paddingFocusVertical = 10,
     this.paddingContentHorizontal = 10,
     this.paddingContentVertical = 10,
     this.contentWidth,
@@ -92,7 +95,8 @@ class TutorialCoachMark {
             contentWidth: contentWidth,
             paddingContentHorizontal: paddingContentHorizontal,
             paddingContentVertical: paddingContentVertical,
-            paddingFocus: paddingFocus,
+            paddingFocusHorizontal: paddingFocusHorizontal,
+            paddingFocusVertical: paddingFocusVertical,
             onClickSkip: skip,
             alignSkip: alignSkip,
             skipWidget: skipWidget,
