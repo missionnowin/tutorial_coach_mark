@@ -6,14 +6,16 @@ import 'package:tutorial_coach_mark/src/target/target_position.dart';
 class RectClipper extends CustomClipper<Path> {
   final double progress;
   final TargetPosition target;
-  final double offset;
+  final double offsetY;
+  final double offsetX;
   final double radius;
   final BorderSide? borderSide;
 
   RectClipper({
     required this.progress,
     required this.target,
-    required this.offset,
+    required this.offsetY,
+    required this.offsetX,
     required this.radius,
     this.borderSide,
   });
@@ -26,10 +28,10 @@ class RectClipper extends CustomClipper<Path> {
         max(target.size.width, target.size.height) +
         target.getBiggerSpaceBorder(size);
 
-    double x = -maxSize / 2 * (1 - progress) + target.offset.dx - offset / 2;
-    double y = -maxSize / 2 * (1 - progress) + target.offset.dy - offset / 2;
-    double w = maxSize * (1 - progress) + target.size.width + offset;
-    double h = maxSize * (1 - progress) + target.size.height + offset;
+    double x = -maxSize / 2 * (1 - progress) + target.offset.dx - offsetX / 2;
+    double y = -maxSize / 2 * (1 - progress) + target.offset.dy - offsetY / 2;
+    double w = maxSize * (1 - progress) + target.size.width + offsetY;
+    double h = maxSize * (1 - progress) + target.size.height + offsetX;
 
     return radius > 0
         ? rRectHolePath(size, x, y, w, h, radius)

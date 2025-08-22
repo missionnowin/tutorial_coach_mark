@@ -13,7 +13,8 @@ class TutorialCoachMarkWidget extends StatefulWidget {
     Key? key,
     required this.targets,
     this.finish,
-    this.paddingFocus = 10,
+    this.paddingFocusVertical = 10,
+    this.paddingFocusHorizontal = 10,
     this.paddingContentVertical = 10,
     this.paddingContentHorizontal = 10,
     this.clickTarget,
@@ -49,7 +50,6 @@ class TutorialCoachMarkWidget extends StatefulWidget {
   final Function()? finish;
   final Color colorShadow;
   final double opacityShadow;
-  final double paddingFocus;
   final double paddingContentHorizontal;
   final double paddingContentVertical;
   final double? contentWidth;
@@ -69,6 +69,8 @@ class TutorialCoachMarkWidget extends StatefulWidget {
   final bool showSkipInLastTarget;
   final ImageFilter? imageFilter;
   final int initialFocus;
+  final double paddingFocusHorizontal;
+  final double paddingFocusVertical;
 
   @override
   TutorialCoachMarkWidgetState createState() => TutorialCoachMarkWidgetState();
@@ -91,7 +93,8 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
             initialFocus: widget.initialFocus,
             targets: widget.targets,
             finish: widget.finish,
-            paddingFocus: widget.paddingFocus,
+            paddingFocusVertical: widget.paddingFocusVertical,
+            paddingFocusHorizontal: widget.paddingFocusHorizontal,
             colorShadow: widget.colorShadow,
             opacityShadow: widget.opacityShadow,
             focusAnimationDuration: widget.focusAnimationDuration,
