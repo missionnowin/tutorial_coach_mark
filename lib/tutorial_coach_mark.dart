@@ -121,31 +121,31 @@ class TutorialCoachMark {
     );
   }
 
-  void show({required BuildContext context, bool rootOverlay = false}) {
+  Future<void> show({required BuildContext context, bool rootOverlay = false}) async {
     OverlayState? overlay = Overlay.of(context, rootOverlay: rootOverlay);
-    overlay.let((it) {
-      showWithOverlayState(overlay: it, rootOverlay: rootOverlay);
+    await overlay.let((it) async {
+      await showWithOverlayState(overlay: it, rootOverlay: rootOverlay);
     });
   }
 
   // `navigatorKey` needs to be the one that you passed to MaterialApp.navigatorKey
-  void showWithNavigatorStateKey({
+  Future<void> showWithNavigatorStateKey({
     required GlobalKey<NavigatorState> navigatorKey,
     bool rootOverlay = false,
-  }) {
-    navigatorKey.currentState?.overlay.let((it) {
-      showWithOverlayState(
+  }) async {
+    await navigatorKey.currentState?.overlay.let((it) async {
+      await showWithOverlayState(
         overlay: it,
         rootOverlay: rootOverlay,
       );
     });
   }
 
-  void showWithOverlayState({
+ Future<void> showWithOverlayState({
     required OverlayState overlay,
     bool rootOverlay = false,
-  }) {
-    postFrame(() => _createAndShow(overlay, rootOverlay: rootOverlay));
+  }) async {
+    await postFrame(() => _createAndShow(overlay, rootOverlay: rootOverlay));
   }
 
   void _createAndShow(
