@@ -45,6 +45,7 @@ class TutorialCoachMark {
   final ImageFilter? imageFilter;
   final int initialFocus;
   final ThemeData? themeData;
+  final VoidCallback? onTargetError;
 
   OverlayEntry? _overlayEntry;
 
@@ -76,6 +77,7 @@ class TutorialCoachMark {
     this.imageFilter,
     this.initialFocus = 0,
     this.themeData,
+    this.onTargetError,
   }) : assert(opacityShadow >= 0 && opacityShadow <= 1);
 
   OverlayEntry _buildOverlay({bool rootOverlay = false}) {
@@ -112,6 +114,7 @@ class TutorialCoachMark {
             showSkipInLastTarget: showSkipInLastTarget,
             imageFilter: imageFilter,
             initialFocus: initialFocus,
+            onTargetError: onTargetError,
           ),
         );
       },

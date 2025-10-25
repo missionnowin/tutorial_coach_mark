@@ -38,6 +38,7 @@ class TutorialCoachMarkWidget extends StatefulWidget {
     this.showSkipInLastTarget = false,
     this.imageFilter,
     this.contentWidth,
+    this.onTargetError,
     this.initialFocus = 0,
   })  : assert(targets.length > 0),
         super(key: key);
@@ -71,6 +72,7 @@ class TutorialCoachMarkWidget extends StatefulWidget {
   final int initialFocus;
   final double paddingFocusHorizontal;
   final double paddingFocusVertical;
+  final VoidCallback? onTargetError;
 
   @override
   TutorialCoachMarkWidgetState createState() => TutorialCoachMarkWidgetState();
@@ -153,6 +155,7 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
     } on NotFoundTargetException catch (e, s) {
       debugPrint(e.toString());
       debugPrintStack(stackTrace: s);
+      widget.onTargetError?.call();
     }
 
     if (target == null) {
