@@ -66,12 +66,12 @@ class NotFoundTargetException extends FormatException {
       : super('It was not possible to obtain target position ($identify).');
 }
 
-void postFrame(VoidCallback callback) {
-  Future.delayed(Duration.zero, callback);
+Future<void> postFrame(VoidCallback callback) async {
+  await Future.delayed(Duration.zero, callback);
 }
 
 extension NullableExt<T> on T? {
-  void let(Function(T it) callback) {
+  Future<void> let(Future<void> Function(T it) callback) async {
     if (this != null) {
       callback(this as T);
     }
